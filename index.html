@@ -3,133 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2S1 - Music Composer</title>
+    <title>D2S1 - Experimental Music Composer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oxanium:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --purple-dark: #2a0a42;
+            --purple-mid: #6a0dad;
+            --purple-light: #9c4dff;
+            --black: #000000;
+            --black-transparent: rgba(0, 0, 0, 0.8);
+        }
+        
         body {
-            background-color: #000000;
+            background-color: var(--black);
             color: white;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Oxanium', sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 13, 173, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(106, 13, 173, 0.1) 0%, transparent 20%);
         }
         
-        .header {
-            text-align: center;
-            padding: 50px 0;
-            position: relative;
-        }
-        
-        .gradient-text {
-            font-size: 4rem;
-            font-weight: bold;
-            background: linear-gradient(90deg, #000000, #6a0dad, #000000);
+        .console-text {
+            font-family: 'Share Tech Mono', monospace;
+            background: linear-gradient(90deg, var(--purple-mid), var(--black), var(--purple-mid));
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: gradientMove 8s linear infinite;
+            animation: consoleMove 6s linear infinite;
+            text-shadow: 0 0 8px rgba(156, 77, 255, 0.3);
         }
         
-        @keyframes gradientMove {
+        @keyframes consoleMove {
             0% {
-                background-position: 0% center;
-            }
-            100% {
                 background-position: 200% center;
             }
+            100% {
+                background-position: 0% center;
+            }
         }
         
-        .music-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .hero {
+            position: relative;
+            height: 70vh;
+            min-height: 400px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
             padding: 20px;
         }
         
-        .track {
-            background-color: rgba(20, 20, 20, 0.7);
-            border-left: 4px solid #6a0dad;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-            transition: transform 0.3s;
+        .title {
+            font-size: 5rem;
+            margin: 0;
+            letter-spacing: 0.5rem;
         }
         
-        .track:hover {
-            transform: translateX(10px);
+        .subtitle {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            letter-spacing: 0.2rem;
+        }
+        
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .track-card {
+            background: linear-gradient(145deg, rgba(42, 10, 66, 0.7), rgba(0, 0, 0, 0.9));
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(106, 13, 173, 0.3);
+        }
+        
+        .track-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(106, 13, 173, 0.4);
+            border-color: rgba(106, 13, 173, 0.7);
+        }
+        
+        .track-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(106, 13, 173, 0.3);
+        }
+        
+        .track-info {
+            padding: 20px;
         }
         
         .track-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #b57edc;
+            font-size: 1.4rem;
+            margin: 0 0 10px 0;
         }
         
-        .youtube-link {
-            color: #ff0000;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
+        .play-button {
+            background: linear-gradient(45deg, var(--purple-mid), var(--purple-light));
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
             font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        .youtube-link:hover {
-            text-decoration: underline;
+        .play-button:hover {
+            background: linear-gradient(45deg, var(--purple-light), var(--purple-mid));
+            box-shadow: 0 0 15px rgba(156, 77, 255, 0.5);
         }
         
         .footer {
             text-align: center;
-            padding: 30px;
+            padding: 40px 20px;
             margin-top: 50px;
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(106, 13, 173, 0.3);
+            position: relative;
+        }
+        
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--purple-mid), transparent);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icon:hover {
+            color: var(--purple-light);
+        }
+        
+        /* Glow effects */
+        .glow {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(106, 13, 173, 0.4), transparent 70%);
+            filter: blur(30px);
+            z-index: -1;
+        }
+        
+        .glow-1 {
+            top: 20%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .glow-2 {
+            bottom: 15%;
+            right: 10%;
+            animation: float 10s ease-in-out infinite 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-20px) translateX(20px);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3rem;
+            }
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            .music-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1 class="gradient-text">D2S1</h1>
-        <p>Experimental Music Composer</p>
+    <div class="hero">
+        <!-- Video background (replace with your own video or use a placeholder) -->
+        <video class="hero-video" autoplay muted loop>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-digital-grid-with-lines-22303-large.mp4" type="video/mp4">
+        </video>
+        
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        
+        <div class="hero-content">
+            <h1 class="title console-text">D2S1</h1>
+            <p class="subtitle console-text">EXPERIMENTAL MUSIC COMPOSER</p>
+        </div>
     </div>
     
-    <div class="music-container">
-        <div class="track">
-            <div class="track-title">Fish</div>
-            <a href="https://www.youtube.com/watch?v=21Zsm0zkAXw" class="youtube-link" target="_blank">Watch on YouTube →</a>
+    <div class="music-grid">
+        <!-- Fish -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/21Zsm0zkAXw/maxresdefault.jpg" alt="Fish" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">FISH</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=21Zsm0zkAXw', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
         
-        <div class="track">
-            <div class="track-title">Please Help Me</div>
-            <a href="https://www.youtube.com/watch?v=kII5AjrI4mE" class="youtube-link" target="_blank">Watch on YouTube →</a>
+        <!-- Please Help Me -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/kII5AjrI4mE/maxresdefault.jpg" alt="Please Help Me" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">PLEASE HELP ME</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=kII5AjrI4mE', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
         
-        <div class="track">
-            <div class="track-title">Forgive Me</div>
-            <a href="https://www.youtube.com/watch?v=ylXFOjowcco" class="youtube-link" target="_blank">Watch on YouTube →</a>
+        <!-- Forgive Me -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/ylXFOjowcco/maxresdefault.jpg" alt="Forgive Me" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">FORGIVE ME</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=ylXFOjowcco', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
         
-        <div class="track">
-            <div class="track-title">Blades</div>
-            <a href="https://www.youtube.com/watch?v=w3_EG4A3G2w" class="youtube-link" target="_blank">Watch on YouTube →</a>
+        <!-- Blades -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/w3_EG4A3G2w/maxresdefault.jpg" alt="Blades" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">BLADES</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=w3_EG4A3G2w', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
         
-        <div class="track">
-            <div class="track-title">Unwanted</div>
-            <a href="https://www.youtube.com/watch?v=2wqlho0bne8" class="youtube-link" target="_blank">Watch on YouTube →</a>
+        <!-- Unwanted -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/2wqlho0bne8/maxresdefault.jpg" alt="Unwanted" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">UNWANTED</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=2wqlho0bne8', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
         
-        <div class="track">
-            <div class="track-title">5469</div>
-            <a href="https://www.youtube.com/watch?v=LkSq4UL2PQA" class="youtube-link" target="_blank">Watch on YouTube →</a>
+        <!-- 5469 -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/LkSq4UL2PQA/maxresdefault.jpg" alt="5469" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">5469</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=LkSq4UL2PQA', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
         
-        <div class="track">
-            <div class="track-title">Meowsic</div>
-            <a href="https://www.youtube.com/watch?v=6cFq0znLGgY" class="youtube-link" target="_blank">Watch on YouTube →</a>
+        <!-- Meowsic -->
+        <div class="track-card">
+            <img src="https://img.youtube.com/vi/6cFq0znLGgY/maxresdefault.jpg" alt="Meowsic" class="track-thumbnail">
+            <div class="track-info">
+                <h3 class="track-title console-text">MEOWSIC</h3>
+                <button class="play-button" onclick="window.open('https://www.youtube.com/watch?v=6cFq0znLGgY', '_blank')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 2L13 8L3 14V2Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    PLAY
+                </button>
+            </div>
         </div>
     </div>
     
     <div class="footer">
-        © 2023 D2S1 Music | All Rights Reserved
+        <p class="console-text">© 2023 D2S1 MUSIC | ALL RIGHTS RESERVED</p>
+        <div class="social-links">
+            <a href="#" class="social-icon console-text">YT</a>
+            <a href="#" class="social-icon console-text">SC</a>
+            <a href="#" class="social-icon console-text">IG</a>
+            <a href="#" class="social-icon console-text">TW</a>
+        </div>
     </div>
 </body>
 </html>
